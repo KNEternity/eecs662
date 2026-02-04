@@ -1,0 +1,60 @@
+Exercise 1
+evalErr (Num 1) == 1
+evalErr (Num (-1)) 
+
+evalErr (Plus (Num 1)(Num 2)) == 3
+evalErr (Plus (Num (-1))(Num 2))
+evalErr (Plus (Num 1)(Num -2))
+evalErr (Plus (Num (-1))(Num (-2)))
+
+evalErr (Minus (Num 5)(Num 4)) == 1
+evalErr (Minus (Num 4)(Num 5))
+evalErr (Mult (Num 4)(Num 7)) == 28
+
+evalErr (Div (Num 8)(Num 4)) == 2
+evalErr (Div (Num 8)(Num 0))
+evalErr (Div (Num 8)(Num 3)) == 2
+
+evalErr(Exp (Num 2)(Num 3)) == 8
+
+Exercise 2
+evalMaybe (Num 1) == Just 1
+evalMaybe (Num (-1)) == Nothing
+
+evalMaybe (Plus (Num 1)(Num 2)) == Just 3
+evalMaybe (Plus (Num (-1))(Num 2)) == Nothing
+
+evalMaybe (Minus (Num 1)(Num 2)) == Nothing
+evalMaybe (Minus (Num 3)(Num 1)) == Just 2
+evalMaybe (Minus (Num (-3))(Num 1)) == Nothing
+evalMaybe (Minus (Num 3)(Num (-1))) == Nothing
+
+evalMaybe (Mult (Num 3)(Num 7)) == Just 21
+evalMaybe (Mult (Num (-3))(Num 7)) == Nothing
+evalMaybe (Mult (Num 3)(Num (-7))) == Nothing
+
+evalMaybe (Div (Num 9)(Num 3)) == Just 3
+evalMaybe (Div (Num 9)(Num 4)) == Just 2
+evalMaybe (Div (Num 9)(Num 0)) == Nothing
+
+evalMaybe (Exp (Num 2)(Num 3)) == Just 8
+evalMaybe (Exp (Num 9)(Num (-1))) == Nothing
+evalMaybe (Exp (Num 9)(Num 9)) == Nothing
+
+Exercise 3
+evalMonad (Plus (Num 5)(Num 6)) == Just 11
+evalMonad (Plus (Num (-5))(Num 6)) == Nothing
+
+evalMonad (Minus (Num 6)(Num 5)) == Just 1
+evalMonad (Minus (Num 6)(Num 7)) == Nothing
+
+evalMonad (Mult (Num 5)(Num 6)) == Just 30
+evalMonad (Mult (Num 5)(Num (-6))) == Nothing
+evalMonad (Mult (Num (-5))(Num (-6))) == Nothing
+
+evalMonad (Div (Num 30)(Num 6)) == Just 5
+evalMonad (Div (Num 30)(Num (-1))) == Nothing
+evalMonad (Div (Num 30)(Num 7)) == Just 4
+
+evalMonad (Exp (Num 2)(Num 3)) == Just 8
+evalMonad (Exp (Num 9)(Num (-1))) == Nothing
