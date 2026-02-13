@@ -112,7 +112,7 @@ typeofMonad (Mult l r) = do {
 }
 typeofMonad (Div l r) = do {
     TNum <- typeofMonad l;
-    TNum <- typeofMonad r;
+    TNum <- typeofMonad r; --don't worry about 0 in type checking
     return TNum  
 }
 typeofMonad (Exp l r) = do {
@@ -155,6 +155,10 @@ typeofMonad _ = Nothing
 
 -- Exercise 3
 interpTypeEval :: KULang -> Maybe KULang
+interpTypeEval x = do{
+    typeofMonad x; --if this runs then we in the type clear
+    evalMonad x; --return this value
+}
 interpTypeEval _ = Nothing
 
 -- Part 2: Optimizer

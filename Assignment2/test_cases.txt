@@ -100,3 +100,56 @@ typeofMonad (If (Num 0)(Boolean True)(Num 0))
 
 typeofMonad (Between (Num 1)(Num 2)(Num 3))
 typeofMonad (Between (Num 5)(Num 5)(Num 6))
+
+Exercise 3
+
+interpTypeEval (Num 1)
+interpTypeEval (Num (-1)) 
+
+interpTypeEval (Boolean True)
+
+interpTypeEval (Plus (Num 1)(Num 2))
+interpTypeEval (Plus (Num (-1))(Num 2))
+interpTypeEval (Plus (Num 1)(Num -2))
+interpTypeEval (Plus (Num (-1))(Num (-2)))
+interpTypeEval (Plus (Num (-1))(Boolean True))
+
+interpTypeEval (Minus (Num 5)(Num 4))
+interpTypeEval (Minus (Num 4)(Num 5))
+interpTypeEval (Minus (Num 4)(Boolean False))
+
+
+interpTypeEval (Mult (Num 3)(Num 7))
+interpTypeEval (Mult (Num (-3))(Num 7))
+interpTypeEval (Mult (Num 3)(Boolean True))
+
+interpTypeEval (Div (Num 8)(Num 4))
+interpTypeEval (Div (Num 8)(Num 0))
+interpTypeEval (Div (Num 3)(Boolean True))
+interpTypeEval (Div (Num 8)(Num 3))
+
+interpTypeEval (Exp (Num 2)(Num 3))
+
+interpTypeEval (And (Boolean True)(Boolean True))
+interpTypeEval (And (Boolean True)(Boolean False))
+interpTypeEval (And (Boolean True)(Num 3))
+
+interpTypeEval (Or (Boolean True)(Boolean True))
+interpTypeEval (Or (Boolean True)(Boolean False))
+interpTypeEval (Or (Boolean True)(Num 3))
+
+interpTypeEval (Leq (Num 8)(Num 4))
+interpTypeEval (Leq (Num 0)(Num 2))
+interpTypeEval (Leq (Num 2)(Num 2))
+interpTypeEval (Leq (Num 3)(Boolean True))
+
+interpTypeEval (IsZero (Num 0))
+interpTypeEval (IsZero (Num 2))
+interpTypeEval (IsZero (Boolean True))
+
+interpTypeEval (If (Boolean True)(Boolean True)(Num 0))
+interpTypeEval (If (Boolean False)(Boolean True)(Num 0))
+interpTypeEval (If (Num 0)(Boolean True)(Num 0))
+
+interpTypeEval (Between (Num 1)(Num 2)(Num 3))
+interpTypeEval (Between (Num 5)(Num 5)(Num 6))
