@@ -1,15 +1,11 @@
 {-# LANGUAGE GADTs, FlexibleContexts #-}
 
--- Import Mapping
-import Data.Map (Map)
-
 -- Imports for Parsec
 import Text.ParserCombinators.Parsec
 import Text.ParserCombinators.Parsec.Language 
 import Text.ParserCombinators.Parsec.Expr 
 import Text.ParserCombinators.Parsec.Token 
 import Data.Time.Format.ISO8601 (yearFormat)
-import GHC.Bits (Bits(xor))
 
 -- Abstract Syntax Definition
 data KULang where
