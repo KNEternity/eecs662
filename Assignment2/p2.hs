@@ -165,8 +165,20 @@ interpTypeEval _ = Nothing
 
 -- Exercise 1
 optimize :: KULang -> KULang
+optimize (Num n) = (Num n)
+optimize (Boolean b) = (Boolean b)
+optimize (Plus l (Num 0)) = (optimize l)
+optimize (Plus l r) = (Plus (optimize l) (optimize r))
+optimize (If (Boolean True) t _) = t
+optimize (If (Boolean False) _ e) = e
+optimize (If c t e) = (If (optimize c)(optimize t)(optimize e))
 optimize a = a
 
 -- Exercise 2
 interpOptEval :: KULang -> Maybe KULang
+interpOptEval x = do{  
+    typeofMonad x; --if this runs then we in the type clear
+
+    evalMonad (optimize x); --return this value
+}
 interpOptEval _ = Nothing

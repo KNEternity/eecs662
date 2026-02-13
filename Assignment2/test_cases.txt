@@ -153,3 +153,72 @@ interpTypeEval (If (Num 0)(Boolean True)(Num 0))
 
 interpTypeEval (Between (Num 1)(Num 2)(Num 3))
 interpTypeEval (Between (Num 5)(Num 5)(Num 6))
+
+Part 2
+
+Exercise 1 
+optimize (Num 5)
+
+optimize (Boolean True)
+
+optimize(Plus (Num 5)(Num 0))
+
+optimize(Plus (Num 6)(Num 7))
+
+optimize (If (Boolean True) (Num 6)(Num 7)) 
+optimize (If (Boolean False) (Num 6)(Num 7))
+optimize (If (Num 7) (Num 6)(Num 7)) 
+
+Exercise 2 
+interpOptEval (Num 1)
+interpOptEval (Num (-1)) 
+
+interpOptEval (Boolean True)
+
+interpOptEval (Plus (Num 1)(Num 2))
+interpOptEval (Plus (Num 1)(Num 0))
+interpOptEval (Plus (Num (-1))(Num 2))
+interpOptEval (Plus (Num 1)(Num (-2)))
+interpOptEval (Plus (Num (-1))(Num (-2)))
+interpOptEval (Plus (Num (-1))(Boolean True))
+
+interpOptEval (Minus (Num 5)(Num 4))
+interpOptEval (Minus (Num 4)(Num 5))
+interpOptEval (Minus (Num 4)(Boolean False))
+
+
+interpOptEval (Mult (Num 3)(Num 7))
+interpOptEval (Mult (Num (-3))(Num 7))
+interpOptEval (Mult (Num 3)(Boolean True))
+
+interpOptEval (Div (Num 8)(Num 4))
+interpOptEval (Div (Num 8)(Num 0))
+interpOptEval (Div (Num 3)(Boolean True))
+interpOptEval (Div (Num 8)(Num 3))
+
+interpOptEval (Exp (Num 2)(Num 3))
+
+interpOptEval (And (Boolean True)(Boolean True))
+interpOptEval (And (Boolean True)(Boolean False))
+interpOptEval (And (Boolean True)(Num 3))
+
+interpOptEval (Or (Boolean True)(Boolean True))
+interpOptEval (Or (Boolean True)(Boolean False))
+interpOptEval (Or (Boolean True)(Num 3))
+
+interpOptEval (Leq (Num 8)(Num 4))
+interpOptEval (Leq (Num 0)(Num 2))
+interpOptEval (Leq (Num 2)(Num 2))
+interpOptEval (Leq (Num 3)(Boolean True))
+
+interpOptEval (IsZero (Num 0))
+interpOptEval (IsZero (Num 2))
+interpOptEval (IsZero (Boolean True))
+
+interpOptEval (If (Boolean True)(Boolean True)(Num 0))
+interpOptEval (If (Boolean True)(Num 1)(Num 0))
+interpOptEval (If (Boolean False)(Boolean True)(Num 0))
+interpOptEval (If (Num 0)(Boolean True)(Num 0))
+
+interpOptEval (Between (Num 1)(Num 2)(Num 3))
+interpOptEval (Between (Num 5)(Num 5)(Num 6))
