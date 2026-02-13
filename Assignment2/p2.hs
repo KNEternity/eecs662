@@ -88,12 +88,69 @@ evalMonad(Between x y z) = do {
     (Num y') <- evalMonad y;
     (Num z') <- evalMonad z;
     evalMonad (And (Boolean(x' < y'))(Boolean(y' < z'))) --oh my god im awesome
-    --Just (Boolean ((x' < y') && (y' < z')))
 }
 evalMonad _ = Nothing
 
 -- Exercise 2
 typeofMonad :: KULang -> Maybe KUTypeLang
+typeofMonad (Num x) = if x < 0 then Nothing else return TNum
+typeofMonad (Boolean x) = return TBool
+typeofMonad (Plus l r ) = do {
+    TNum <- typeofMonad l;
+    TNum <- typeofMonad r;
+    return TNum
+}
+typeofMonad (Minus l r) = do {
+    TNum <- typeofMonad l;
+    TNum <- typeofMonad r;
+    return TNum  
+}
+typeofMonad (Mult l r) = do {
+    TNum <- typeofMonad l;
+    TNum <- typeofMonad r;
+    return TNum  
+}
+typeofMonad (Div l r) = do {
+    TNum <- typeofMonad l;
+    TNum <- typeofMonad r;
+    return TNum  
+}
+typeofMonad (Exp l r) = do {
+    TNum <- typeofMonad l;
+    TNum <- typeofMonad r;
+    return TNum  
+}
+typeofMonad (And l r) = do {
+    TBool <- typeofMonad l;
+    TBool <- typeofMonad r;
+    return TBool  
+}
+typeofMonad (Or l r) = do {
+    TBool <- typeofMonad l;
+    TBool <- typeofMonad r;
+    return TBool  
+}
+typeofMonad (Leq l r) = do {
+    TNum <- typeofMonad l;
+    TNum <- typeofMonad r;
+    return TBool  
+}
+typeofMonad (IsZero n) = do {
+    TNum <- typeofMonad n;
+    return TBool
+}
+typeofMonad (If c t e) = do{
+    TBool <- typeofMonad c;
+    t' <- typeofMonad t;
+    e' <- typeofMonad e;
+    if t'==e' then return t' else Nothing
+}
+typeofMonad (Between x y z) = do {
+    TNum <- typeofMonad x;
+    TNum <- typeofMonad y;
+    TNum <- typeofMonad z;
+    return TBool  
+}
 typeofMonad _ = Nothing
 
 -- Exercise 3

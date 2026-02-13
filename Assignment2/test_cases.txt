@@ -1,8 +1,8 @@
 Exercise 1
-evalMonad (Num 1) == 1
+evalMonad (Num 1)
 evalMonad (Num (-1)) 
 
-evalMonad (Plus (Num 1)(Num 2)) == Just 3
+evalMonad (Plus (Num 1)(Num 2))
 evalMonad (Plus (Num (-1))(Num 2))
 evalMonad (Plus (Num 1)(Num -2))
 evalMonad (Plus (Num (-1))(Num (-2)))
@@ -49,45 +49,54 @@ evalMonad (Between (Num 1)(Num 2)(Num 3))
 evalMonad (Between (Num 5)(Num 5)(Num 6))
 
 Exercise 2
-evalMaybe (Num 1) == Just 1
-evalMaybe (Num (-1)) == Nothing
 
-evalMaybe (Plus (Num 1)(Num 2)) == Just 3
-evalMaybe (Plus (Num (-1))(Num 2)) == Nothing
+typeofMonad (Num 1)
+typeofMonad (Num (-1)) 
 
-evalMaybe (Minus (Num 1)(Num 2)) == Nothing
-evalMaybe (Minus (Num 3)(Num 1)) == Just 2
-evalMaybe (Minus (Num (-3))(Num 1)) == Nothing
-evalMaybe (Minus (Num 3)(Num (-1))) == Nothing
+typeofMonad (Boolean True)
 
-evalMaybe (Mult (Num 3)(Num 7)) == Just 21
-evalMaybe (Mult (Num (-3))(Num 7)) == Nothing
-evalMaybe (Mult (Num 3)(Num (-7))) == Nothing
+typeofMonad (Plus (Num 1)(Num 2))
+typeofMonad (Plus (Num (-1))(Num 2))
+typeofMonad (Plus (Num 1)(Num -2))
+typeofMonad (Plus (Num (-1))(Num (-2)))
+typeofMonad (Plus (Num (-1))(Boolean True))
 
-evalMaybe (Div (Num 9)(Num 3)) == Just 3
-evalMaybe (Div (Num 9)(Num 4)) == Just 2
-evalMaybe (Div (Num 9)(Num 0)) == Nothing
+typeofMonad (Minus (Num 5)(Num 4))
+typeofMonad (Minus (Num 4)(Num 5))
+typeofMonad (Minus (Num 4)(Boolean False))
 
-evalMaybe (Exp (Num 2)(Num 3)) == Just 8
-evalMaybe (Exp (Num 9)(Num (-1))) == Nothing
-evalMaybe (Exp (Num 9)(Num 9)) == Nothing
 
-Exercise 3
-evalMonad (Plus (Num 5)(Num 6)) == Just 11
-evalMonad (Plus (Num (-5))(Num 6)) == Nothing
+typeofMonad (Mult (Num 3)(Num 7))
+typeofMonad (Mult (Num (-3))(Num 7))
+typeofMonad (Mult (Num 3)(Boolean True))
 
-evalMonad (Minus (Num 6)(Num 5)) == Just 1
-evalMonad (Minus (Num 6)(Num 7)) == Nothing
+typeofMonad (Div (Num 8)(Num 4))
+typeofMonad (Div (Num 8)(Num 0))
+typeofMonad (Div (Num 3)(Boolean True))
+typeofMonad (Div (Num 8)(Num 3))
 
-evalMonad (Mult (Num 5)(Num 6)) == Just 30
-evalMonad (Mult (Num 5)(Num (-6))) == Nothing
-evalMonad (Mult (Num (-5))(Num (-6))) == Nothing
+typeofMonad (Exp (Num 2)(Num 3))
 
-evalMonad (Div (Num 30)(Num 6)) == Just 5
-evalMonad (Div (Num 30)(Num (-1))) == Nothing
-evalMonad (Div (Num 30)(Num 7)) == Just 4
-evalMonad (Div (Num 30)(Num 0)) == Nothing
+typeofMonad (And (Boolean True)(Boolean True))
+typeofMonad (And (Boolean True)(Boolean False))
+typeofMonad (And (Boolean True)(Num 3))
 
-evalMonad (Exp (Num 2)(Num 3)) == Just 8
-evalMonad (Exp (Num 9)(Num (-1))) == Nothing
-evalMonad (Exp (Num 9)(Num 0)) == Just 1
+typeofMonad (Or (Boolean True)(Boolean True))
+typeofMonad (Or (Boolean True)(Boolean False))
+typeofMonad (Or (Boolean True)(Num 3))
+
+typeofMonad (Leq (Num 8)(Num 4))
+typeofMonad (Leq (Num 0)(Num 2))
+typeofMonad (Leq (Num 2)(Num 2))
+typeofMonad (Leq (Num 3)(Boolean True))
+
+typeofMonad (IsZero (Num 0))
+typeofMonad (IsZero (Num 2))
+typeofMonad (IsZero (Boolean True))
+
+typeofMonad (If (Boolean True)(Boolean True)(Num 0))
+typeofMonad (If (Boolean False)(Boolean True)(Num 0))
+typeofMonad (If (Num 0)(Boolean True)(Num 0))
+
+typeofMonad (Between (Num 1)(Num 2)(Num 3))
+typeofMonad (Between (Num 5)(Num 5)(Num 6))
