@@ -1,0 +1,93 @@
+Exercise 1
+evalMonad (Num 1) == 1
+evalMonad (Num (-1)) 
+
+evalMonad (Plus (Num 1)(Num 2)) == Just 3
+evalMonad (Plus (Num (-1))(Num 2))
+evalMonad (Plus (Num 1)(Num -2))
+evalMonad (Plus (Num (-1))(Num (-2)))
+evalMonad (Plus (Num (-1))(Boolean True))
+
+evalMonad (Minus (Num 5)(Num 4))
+evalMonad (Minus (Num 4)(Num 5))
+evalMonad (Minus (Num 4)(Boolean False))
+
+
+evalMonad (Mult (Num 3)(Num 7))
+evalMonad (Mult (Num (-3))(Num 7))
+evalMonad (Mult (Num 3)(Boolean True))
+
+evalMonad (Div (Num 8)(Num 4))
+evalMonad (Div (Num 8)(Num 0))
+evalMonad (Div (Num 3)(Boolean True))
+evalMonad (Div (Num 8)(Num 3))
+
+evalMonad (Exp (Num 2)(Num 3))
+
+evalMonad (And (Boolean True)(Boolean True))
+evalMonad (And (Boolean True)(Boolean False))
+evalMonad (And (Boolean True)(Num 3))
+
+evalMonad (Or (Boolean True)(Boolean True))
+evalMonad (Or (Boolean True)(Boolean False))
+evalMonad (Or (Boolean True)(Num 3))
+
+evalMonad (Leq (Num 8)(Num 4))
+evalMonad (Leq (Num 0)(Num 2))
+evalMonad (Leq (Num 2)(Num 2))
+evalMonad (Leq (Num 3)(Boolean True))
+
+evalMonad (IsZero (Num 0))
+evalMonad (IsZero (Num 2))
+evalMonad (IsZero (Boolean True))
+
+evalMonad (If (Boolean True)(Boolean True)(Num 0))
+evalMonad (If (Boolean False)(Boolean True)(Num 0))
+evalMonad (If (Num 0)(Boolean True)(Num 0))
+
+evalMonad (Between (Num 1)(Num 2)(Num 3))
+evalMonad (Between (Num 5)(Num 5)(Num 6))
+
+Exercise 2
+evalMaybe (Num 1) == Just 1
+evalMaybe (Num (-1)) == Nothing
+
+evalMaybe (Plus (Num 1)(Num 2)) == Just 3
+evalMaybe (Plus (Num (-1))(Num 2)) == Nothing
+
+evalMaybe (Minus (Num 1)(Num 2)) == Nothing
+evalMaybe (Minus (Num 3)(Num 1)) == Just 2
+evalMaybe (Minus (Num (-3))(Num 1)) == Nothing
+evalMaybe (Minus (Num 3)(Num (-1))) == Nothing
+
+evalMaybe (Mult (Num 3)(Num 7)) == Just 21
+evalMaybe (Mult (Num (-3))(Num 7)) == Nothing
+evalMaybe (Mult (Num 3)(Num (-7))) == Nothing
+
+evalMaybe (Div (Num 9)(Num 3)) == Just 3
+evalMaybe (Div (Num 9)(Num 4)) == Just 2
+evalMaybe (Div (Num 9)(Num 0)) == Nothing
+
+evalMaybe (Exp (Num 2)(Num 3)) == Just 8
+evalMaybe (Exp (Num 9)(Num (-1))) == Nothing
+evalMaybe (Exp (Num 9)(Num 9)) == Nothing
+
+Exercise 3
+evalMonad (Plus (Num 5)(Num 6)) == Just 11
+evalMonad (Plus (Num (-5))(Num 6)) == Nothing
+
+evalMonad (Minus (Num 6)(Num 5)) == Just 1
+evalMonad (Minus (Num 6)(Num 7)) == Nothing
+
+evalMonad (Mult (Num 5)(Num 6)) == Just 30
+evalMonad (Mult (Num 5)(Num (-6))) == Nothing
+evalMonad (Mult (Num (-5))(Num (-6))) == Nothing
+
+evalMonad (Div (Num 30)(Num 6)) == Just 5
+evalMonad (Div (Num 30)(Num (-1))) == Nothing
+evalMonad (Div (Num 30)(Num 7)) == Just 4
+evalMonad (Div (Num 30)(Num 0)) == Nothing
+
+evalMonad (Exp (Num 2)(Num 3)) == Just 8
+evalMonad (Exp (Num 9)(Num (-1))) == Nothing
+evalMonad (Exp (Num 9)(Num 0)) == Just 1

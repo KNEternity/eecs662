@@ -55,6 +55,8 @@ evalMonad (Mult (Num (-5))(Num (-6))) == Nothing
 evalMonad (Div (Num 30)(Num 6)) == Just 5
 evalMonad (Div (Num 30)(Num (-1))) == Nothing
 evalMonad (Div (Num 30)(Num 7)) == Just 4
+evalMonad (Div (Num 30)(Num 0)) == Nothing
 
 evalMonad (Exp (Num 2)(Num 3)) == Just 8
 evalMonad (Exp (Num 9)(Num (-1))) == Nothing
+evalMonad (Exp (Num 9)(Num 0)) == Just 1
