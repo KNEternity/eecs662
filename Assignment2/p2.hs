@@ -77,12 +77,9 @@ evalMonad (IsZero x) = do {
     (Num x') <- evalMonad x;
     Just (Boolean (x' == 0))
 }
-evalMonad (If c t e) = do {
+evalMonad (If c t e) = do{
     (Boolean c') <- evalMonad c;
-    t' <- evalMonad t;
-    e' <- evalMonad e;
-    if c' then Just t' else Just e'
-}
+    if c' then (evalMonad t) else (evalMonad e)}
 evalMonad(Between x y z) = do {
     (Num x') <- evalMonad x;
     (Num y') <- evalMonad y;
@@ -166,12 +163,34 @@ interpTypeEval _ = Nothing
 -- Exercise 1
 optimize :: KULang -> KULang
 optimize (Num n) = (Num n)
+
 optimize (Boolean b) = (Boolean b)
+
 optimize (Plus l (Num 0)) = (optimize l)
+--optimization of nested statements
 optimize (Plus l r) = (Plus (optimize l) (optimize r))
+
+optimize (Minus l r) = (Minus (optimize l)(optimize r))
+
+optimize (Mult l r) = (Mult (optimize l)(optimize r))
+
+optimize (Div l r) = (Div (optimize l)(optimize r))
+
+optimize (Exp l r) = (Exp (optimize l)(optimize r))
+
+optimize (And l r) = (And (optimize l)(optimize r))
+
+optimize (Or l r) = (Or (optimize l)(optimize r))
+
+optimize (Leq l r) = (Leq (optimize l)(optimize r))
+
+optimize (IsZero n) = (IsZero (optimize n)) --im not sure really sure if this is okay but i guess n could be nested)
+
 optimize (If (Boolean True) t _) = t
 optimize (If (Boolean False) _ e) = e
 optimize (If c t e) = (If (optimize c)(optimize t)(optimize e))
+
+optimize (Between x y z) = (Between (optimize x)(optimize y)(optimize z)) 
 optimize a = a
 
 -- Exercise 2

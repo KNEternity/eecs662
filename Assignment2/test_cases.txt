@@ -168,7 +168,9 @@ optimize(Plus (Num 6)(Num 7))
 optimize (If (Boolean True) (Num 6)(Num 7)) 
 optimize (If (Boolean False) (Num 6)(Num 7))
 optimize (If (Num 7) (Num 6)(Num 7)) 
+optimize (Minus (Plus (Num 5) (Num 0)) (Num 3))
 
+optimize (Exp (Plus (Num 5) (Num 0)) (Num 3))
 Exercise 2 
 interpOptEval (Num 1)
 interpOptEval (Num (-1)) 
@@ -222,3 +224,5 @@ interpOptEval (If (Num 0)(Boolean True)(Num 0))
 
 interpOptEval (Between (Num 1)(Num 2)(Num 3))
 interpOptEval (Between (Num 5)(Num 5)(Num 6))
+
+interpOptEval(Minus (Plus (Num 5) (Num 0)) (Num 3))
