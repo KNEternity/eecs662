@@ -186,8 +186,8 @@ optimize (Leq l r) = (Leq (optimize l)(optimize r))
 
 optimize (IsZero n) = (IsZero (optimize n)) --im not sure really sure if this is okay but i guess n could be nested)
 
-optimize (If (Boolean True) t _) = t
-optimize (If (Boolean False) _ e) = e
+optimize (If (Boolean True) t _) = (optimize t)
+optimize (If (Boolean False) _ e) = (optimize e)
 optimize (If c t e) = (If (optimize c)(optimize t)(optimize e))
 
 optimize (Between x y z) = (Between (optimize x)(optimize y)(optimize z)) 
