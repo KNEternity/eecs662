@@ -1,0 +1,229 @@
+Exercise 1
+evalDirect (Num 1)
+evalDirect (Num (-1)) 
+
+evalDirect (Plus (Num 1)(Num 2))
+evalDirect (Plus (Num (-1))(Num 2))
+evalDirect (Plus (Num 1)(Num -2))
+evalDirect (Plus (Num (-1))(Num (-2)))
+evalDirect (Plus (Num (-1))(Boolean True))
+
+evalDirect (Minus (Num 5)(Num 4))
+evalDirect (Minus (Num 4)(Num 5))
+evalDirect (Minus (Num 4)(Boolean False))
+
+
+evalDirect (Mult (Num 3)(Num 7))
+evalDirect (Mult (Num (-3))(Num 7))
+evalDirect (Mult (Num 3)(Boolean True))
+
+evalDirect (Div (Num 8)(Num 4))
+evalDirect (Div (Num 8)(Num 0))
+evalDirect (Div (Num 3)(Boolean True))
+evalDirect (Div (Num 8)(Num 3))
+
+evalDirect (Exp (Num 2)(Num 3))
+
+evalDirect (And (Boolean True)(Boolean True))
+evalDirect (And (Boolean True)(Boolean False))
+evalDirect (And (Boolean True)(Num 3))
+
+evalDirect (Or (Boolean True)(Boolean True))
+evalDirect (Or (Boolean True)(Boolean False))
+evalDirect (Or (Boolean True)(Num 3))
+
+evalDirect (Leq (Num 8)(Num 4))
+evalDirect (Leq (Num 0)(Num 2))
+evalDirect (Leq (Num 2)(Num 2))
+evalDirect (Leq (Num 3)(Boolean True))
+
+evalDirect (IsZero (Num 0))
+evalDirect (IsZero (Num 2))
+evalDirect (IsZero (Boolean True))
+
+evalDirect (If (Boolean True)(Boolean True)(Num 0))
+evalDirect (If (Boolean False)(Boolean True)(Num 0))
+evalDirect (If (Num 0)(Boolean True)(Num 0))
+
+evalDirect (Between (Num 1)(Num 2)(Num 3))
+evalDirect (Between (Num 5)(Num 5)(Num 6))
+
+evalDirect (Bind "x" (Num 3) (Plus (Id "x") (Num 1)))
+
+Exercise 2
+typeofMonad (Num 1)
+typeofMonad (Num (-1)) 
+
+typeofMonad (Boolean True)
+
+typeofMonad (Plus (Num 1)(Num 2))
+typeofMonad (Plus (Num (-1))(Num 2))
+typeofMonad (Plus (Num 1)(Num -2))
+typeofMonad (Plus (Num (-1))(Num (-2)))
+typeofMonad (Plus (Num (-1))(Boolean True))
+
+typeofMonad (Minus (Num 5)(Num 4))
+typeofMonad (Minus (Num 4)(Num 5))
+typeofMonad (Minus (Num 4)(Boolean False))
+
+
+typeofMonad (Mult (Num 3)(Num 7))
+typeofMonad (Mult (Num (-3))(Num 7))
+typeofMonad (Mult (Num 3)(Boolean True))
+
+typeofMonad (Div (Num 8)(Num 4))
+typeofMonad (Div (Num 8)(Num 0))
+typeofMonad (Div (Num 3)(Boolean True))
+typeofMonad (Div (Num 8)(Num 3))
+
+typeofMonad (Exp (Num 2)(Num 3))
+
+typeofMonad (And (Boolean True)(Boolean True))
+typeofMonad (And (Boolean True)(Boolean False))
+typeofMonad (And (Boolean True)(Num 3))
+
+typeofMonad (Or (Boolean True)(Boolean True))
+typeofMonad (Or (Boolean True)(Boolean False))
+typeofMonad (Or (Boolean True)(Num 3))
+
+typeofMonad (Leq (Num 8)(Num 4))
+typeofMonad (Leq (Num 0)(Num 2))
+typeofMonad (Leq (Num 2)(Num 2))
+typeofMonad (Leq (Num 3)(Boolean True))
+
+typeofMonad (IsZero (Num 0))
+typeofMonad (IsZero (Num 2))
+typeofMonad (IsZero (Boolean True))
+
+typeofMonad (If (Boolean True)(Boolean True)(Num 0))
+typeofMonad (If (Boolean False)(Boolean True)(Num 0))
+typeofMonad (If (Num 0)(Boolean True)(Num 0))
+
+typeofMonad (Between (Num 1)(Num 2)(Num 3))
+typeofMonad (Between (Num 5)(Num 5)(Num 6))
+
+Exercise 3
+
+interpTypeEval (Num 1)
+interpTypeEval (Num (-1)) 
+
+interpTypeEval (Boolean True)
+
+interpTypeEval (Plus (Num 1)(Num 2))
+interpTypeEval (Plus (Num (-1))(Num 2))
+interpTypeEval (Plus (Num 1)(Num -2))
+interpTypeEval (Plus (Num (-1))(Num (-2)))
+interpTypeEval (Plus (Num (-1))(Boolean True))
+
+interpTypeEval (Minus (Num 5)(Num 4))
+interpTypeEval (Minus (Num 4)(Num 5))
+interpTypeEval (Minus (Num 4)(Boolean False))
+
+
+interpTypeEval (Mult (Num 3)(Num 7))
+interpTypeEval (Mult (Num (-3))(Num 7))
+interpTypeEval (Mult (Num 3)(Boolean True))
+
+interpTypeEval (Div (Num 8)(Num 4))
+interpTypeEval (Div (Num 8)(Num 0))
+interpTypeEval (Div (Num 3)(Boolean True))
+interpTypeEval (Div (Num 8)(Num 3))
+
+interpTypeEval (Exp (Num 2)(Num 3))
+
+interpTypeEval (And (Boolean True)(Boolean True))
+interpTypeEval (And (Boolean True)(Boolean False))
+interpTypeEval (And (Boolean True)(Num 3))
+
+interpTypeEval (Or (Boolean True)(Boolean True))
+interpTypeEval (Or (Boolean True)(Boolean False))
+interpTypeEval (Or (Boolean True)(Num 3))
+
+interpTypeEval (Leq (Num 8)(Num 4))
+interpTypeEval (Leq (Num 0)(Num 2))
+interpTypeEval (Leq (Num 2)(Num 2))
+interpTypeEval (Leq (Num 3)(Boolean True))
+
+interpTypeEval (IsZero (Num 0))
+interpTypeEval (IsZero (Num 2))
+interpTypeEval (IsZero (Boolean True))
+
+interpTypeEval (If (Boolean True)(Boolean True)(Num 0))
+interpTypeEval (If (Boolean False)(Boolean True)(Num 0))
+interpTypeEval (If (Num 0)(Boolean True)(Num 0))
+
+interpTypeEval (Between (Num 1)(Num 2)(Num 3))
+interpTypeEval (Between (Num 5)(Num 5)(Num 6))
+
+Part 2
+
+Exercise 1 
+optimize (Num 5)
+
+optimize (Boolean True)
+
+optimize(Plus (Num 5)(Num 0))
+
+optimize(Plus (Num 6)(Num 7))
+
+optimize (If (Boolean True) (Num 6)(Num 7)) 
+optimize (If (Boolean False) (Num 6)(Num 7))
+optimize (If (Num 7) (Num 6)(Num 7)) 
+optimize (Minus (Plus (Num 5) (Num 0)) (Num 3))
+
+optimize (Exp (Plus (Num 5) (Num 0)) (Num 3))
+Exercise 2 
+interpOptEval (Num 1)
+interpOptEval (Num (-1)) 
+
+interpOptEval (Boolean True)
+
+interpOptEval (Plus (Num 1)(Num 2))
+interpOptEval (Plus (Num 1)(Num 0))
+interpOptEval (Plus (Num (-1))(Num 2))
+interpOptEval (Plus (Num 1)(Num (-2)))
+interpOptEval (Plus (Num (-1))(Num (-2)))
+interpOptEval (Plus (Num (-1))(Boolean True))
+
+interpOptEval (Minus (Num 5)(Num 4))
+interpOptEval (Minus (Num 4)(Num 5))
+interpOptEval (Minus (Num 4)(Boolean False))
+
+
+interpOptEval (Mult (Num 3)(Num 7))
+interpOptEval (Mult (Num (-3))(Num 7))
+interpOptEval (Mult (Num 3)(Boolean True))
+
+interpOptEval (Div (Num 8)(Num 4))
+interpOptEval (Div (Num 8)(Num 0))
+interpOptEval (Div (Num 3)(Boolean True))
+interpOptEval (Div (Num 8)(Num 3))
+
+interpOptEval (Exp (Num 2)(Num 3))
+
+interpOptEval (And (Boolean True)(Boolean True))
+interpOptEval (And (Boolean True)(Boolean False))
+interpOptEval (And (Boolean True)(Num 3))
+
+interpOptEval (Or (Boolean True)(Boolean True))
+interpOptEval (Or (Boolean True)(Boolean False))
+interpOptEval (Or (Boolean True)(Num 3))
+
+interpOptEval (Leq (Num 8)(Num 4))
+interpOptEval (Leq (Num 0)(Num 2))
+interpOptEval (Leq (Num 2)(Num 2))
+interpOptEval (Leq (Num 3)(Boolean True))
+
+interpOptEval (IsZero (Num 0))
+interpOptEval (IsZero (Num 2))
+interpOptEval (IsZero (Boolean True))
+
+interpOptEval (If (Boolean True)(Boolean True)(Num 0))
+interpOptEval (If (Boolean True)(Num 1)(Num 0))
+interpOptEval (If (Boolean False)(Boolean True)(Num 0))
+interpOptEval (If (Num 0)(Boolean True)(Num 0))
+
+interpOptEval (Between (Num 1)(Num 2)(Num 3))
+interpOptEval (Between (Num 5)(Num 5)(Num 6))
+
+interpOptEval(Minus (Plus (Num 5) (Num 0)) (Num 3))
