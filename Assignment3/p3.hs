@@ -123,8 +123,8 @@ evalDeferred e (Plus l r) = do {(Num l') <- evalDeferred e l;
 evalDeferred e (Minus l r ) = do {
     (Num l') <- evalDeferred e l;
     (Num r') <- evalDeferred e r;
-    (Num d) <- Just (Num(l'-r')); --I think I'm supposed to force d to be num type
-    if d < 0 then Nothing else Just (Num d) --then do it again?
+    (Num d) <- Just (Num(l'-r')); 
+    if d < 0 then Nothing else Just (Num d) 
 }
 evalDeferred e (Mult l r) = do {
     (Num l') <- evalDeferred e l;
@@ -188,9 +188,77 @@ testEvals _ = True
 
 --Exercise 1
 typeofMonad :: Cont -> KULang -> (Maybe KUTypeLang)
+typeofMonad c (Num x) = if x < 0 then Nothing else return TNum
+
+typeofMonad c (Boolean x) = return TBool
+typeofMonad c (Plus l r ) = do {
+    TNum <- typeofMonad c l;
+    TNum <- typeofMonad c r;
+    return TNum
+}
+typeofMonad c (Minus l r) = do {
+    TNum <- typeofMonad c l;
+    TNum <- typeofMonad c r;
+    return TNum  
+}
+typeofMonad c (Mult l r) = do {
+    TNum <- typeofMonad c l;
+    TNum <- typeofMonad c r;
+    return TNum  
+}
+typeofMonad c (Div l r) = do {
+    TNum <- typeofMonad c l;
+    TNum <- typeofMonad c r; 
+    return TNum  
+}
+typeofMonad c (Exp l r) = do {
+    TNum <- typeofMonad c l;
+    TNum <- typeofMonad c r;
+    return TNum  
+}
+typeofMonad c (And l r) = do {
+    TBool <- typeofMonad c l;
+    TBool <- typeofMonad c r;
+    return TBool  
+}
+typeofMonad c (Or l r) = do {
+    TBool <- typeofMonad c l;
+    TBool <- typeofMonad c r;
+    return TBool  
+}
+typeofMonad c (Leq l r) = do {
+    TNum <- typeofMonad c l;
+    TNum <- typeofMonad c r;
+    return TBool  
+}
+typeofMonad c (IsZero n) = do {
+    TNum <- typeofMonad c n;
+    return TBool
+}
+typeofMonad c' (If c t e) = do{
+    TBool <- typeofMonad c' c;
+    t' <- typeofMonad c' t;
+    e' <- typeofMonad c' e;
+    if t'==e' then return t' else Nothing
+}
+typeofMonad c (Between x y z) = do {
+    TNum <- typeofMonad c x;
+    TNum <- typeofMonad c y;
+    TNum <- typeofMonad c z;
+    return TBool  
+}
+
+typeofMonad c (Bind i v b) = do {
+    v' <- typeofMonad c v;
+    typeofMonad ((i,v'): c) b
+}
 typeofMonad _ _ = Nothing
 
 --Exercise 2
 interpret :: KULang -> (Maybe KULang)
+interpret x = do{
+    _ <- typeofMonad [] x; --if this runs then we in the type clear
+    evalDirect x; --return this value
+}
 interpret _ = Nothing
 
