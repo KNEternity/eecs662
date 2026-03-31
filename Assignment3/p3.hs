@@ -1,4 +1,5 @@
 {-# LANGUAGE GADTs,FlexibleContexts #-}
+import GHC.Base (bindIO)
 
 
 -- AST and Type Definitions
@@ -42,7 +43,7 @@ subst :: String -> KULang -> KULang -> KULang
 subst _ _ (Num x) = (Num x)
 subst i v (Plus l r) = (Plus (subst i v l) (subst i v r))
 subst i v (Minus l r) = (Minus (subst i v l) (subst i v r))
-subst i v (Bind i' v' b') = if i==i'
+subst i v (Bind i' v' b') = if i==i' --if same id is recasted, then don't change the inner id
 	                        then (Bind i' (subst i v v') b')
 	                        else (Bind i' (subst i v v') (subst i v b'))
 subst i v (Id i') = if i==i'
@@ -163,7 +164,7 @@ evalDeferred e (If c t h) = do{
     (Boolean c') <- evalDeferred e c;
     if c' then (evalDeferred e t) else (evalDeferred e h)
 }
-evalDeferred e(Between x y z) = do {
+evalDeferred e (Between x y z) = do {
     (Num x') <- evalDeferred e x;
     (Num y') <- evalDeferred e y;
     (Num z') <- evalDeferred e z;
@@ -171,13 +172,16 @@ evalDeferred e(Between x y z) = do {
 }
 evalDeferred e (Bind i v b) = do {
     v' <- evalDeferred e v;
-    evalDeferred (i,v'):e b
+    evalDeferred ((i,v'): e) b
 }
 evalDeferred e (Id i) = (lookup i e) --now we use the env to find our value
 evalDeferred _ _ = Nothing
 
 -- Exercise 3
 testEvals :: KULang -> Bool
+testEvals x = 
+    if evalDirect x == evalDeferred [] x then True else False
+
 testEvals _ = True
 
 -- Part 2: Type Checking
