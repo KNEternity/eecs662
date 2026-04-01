@@ -116,6 +116,7 @@ evalDirect _ = Nothing
 
 -- Exercise 2
 evalDeferred :: Env -> KULang -> (Maybe KULang)
+evalDeferred e (Boolean b) = Just (Boolean b)
 evalDeferred e (Num n) = return (Num n)
 evalDeferred e (Plus l r) = do {(Num l') <- evalDeferred e l;
                         (Num r') <- evalDeferred e r;
@@ -252,6 +253,8 @@ typeofMonad c (Bind i v b) = do {
     v' <- typeofMonad c v;
     typeofMonad ((i,v'): c) b
 }
+
+typeofMonad c (Id i) = (lookup i c)
 typeofMonad _ _ = Nothing
 
 --Exercise 2
