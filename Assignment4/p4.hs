@@ -89,6 +89,40 @@ useClosure i v e _ = (i,v):e
 
 -- Exercise 1:
 evalDyn :: Env -> KULang -> (Maybe KULang)
+evalDyn e (Num n) = return (Num n)
+evalDyn e (Plus l r) = do {(Num l') <- evalDyn e l;
+                        (Num r') <- evalDyn e r;
+                        return (Num (l'+r'))}
+evalDyn e (Minus l r ) = do {
+    (Num l') <- evalDyn e l;
+    (Num r') <- evalDyn e r;
+    (Num d) <- Just (Num(l'-r')); 
+    if d < 0 then Nothing else Just (Num d) 
+}
+evalDyn e (Mult l r) = do {
+    (Num l') <- evalDyn e l;
+    (Num r') <- evalDyn e r;
+    Just (Num (l'*r'))
+}
+evalDyn e (Div l r ) = do {
+    (Num l') <- evalDyn e l;
+    (Num r') <- evalDyn e r;
+    if r' == 0 then Nothing else Just (Num (l' `div` r'))
+}
+evalDyn e (Exp l r) = do{
+    (Num l') <- evalDyn e l;
+    (Num r') <- evalDyn e r;
+    Just (Num (l'^r'))   
+}
+evalDyn e (If0 c t e') = do {
+    (Num c') <- evalDyn e c;
+    if c' == 0 then (evalDyn e t) else (evalDyn e e') 
+}
+evalDyn e (Id i) = (lookup i e) --now we use the env to find our value
+evalDyn e (Lambda i b) = return (Lambda i b)
+eval e (App f a) = do {(Lambda i b) <- evalDyn e f;
+                        v <- eval e a;
+                        eval (i,v):e b}
 evalDyn _ _ = Nothing
 
 -- Exercise 2:
