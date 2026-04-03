@@ -120,13 +120,47 @@ evalDyn e (If0 c t e') = do {
 }
 evalDyn e (Id i) = (lookup i e) --now we use the env to find our value
 evalDyn e (Lambda i b) = return (Lambda i b)
-eval e (App f a) = do {(Lambda i b) <- evalDyn e f;
-                        v <- eval e a;
-                        eval (i,v):e b}
+evalDyn e (App f a) = do {(Lambda i b) <- evalDyn e f;
+                        v <- evalDyn e a;
+                        evalDyn ((i,v):e) b}
 evalDyn _ _ = Nothing
 
 -- Exercise 2:
 evalStat :: EnvVal -> KULang -> (Maybe KULangVal)
+evalStat e (Num n) = return (NumV n)
+evalStat e (Plus l r) = do {(NumV l') <- evalStat e l;
+                        (NumV r') <- evalStat e r;
+                        return (NumV (l'+r'))}
+evalStat e (Minus l r ) = do {
+    (NumV l') <- evalStat e l;
+    (NumV r') <- evalStat e r;
+    (NumV d) <- Just (NumV(l'-r')); 
+    if d < 0 then Nothing else Just (NumV d) 
+}
+evalStat e (Mult l r) = do {
+    (NumV l') <- evalStat e l;
+    (NumV r') <- evalStat e r;
+    Just (NumV (l'*r'))
+}
+evalStat e (Div l r ) = do {
+    (NumV l') <- evalStat e l;
+    (NumV r') <- evalStat e r;
+    if r' == 0 then Nothing else Just (NumV (l' `div` r'))
+}
+evalStat e (Exp l r) = do{
+    (NumV l') <- evalStat e l;
+    (NumV r') <- evalStat e r;
+    Just (NumV (l'^r'))   
+}
+evalStat e (If0 c t e') = do {
+    (NumV c') <- evalStat e c;
+    if c' == 0 then (evalStat e t) else (evalStat e e') 
+}
+evalStat e (Id i) = (lookup i e) --now we use the env to find our value
+evalStat e (Lambda i b) = return (ClosureV i b e)
+evalStat e (App f a) = do {(ClosureV i b ce)<- evalStat e f;
+                        v <- evalStat e a;
+                        evalStat ((i,v):ce) b}
 evalStat _ _ = Nothing
 
 -- Part 2: Elaboration
