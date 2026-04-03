@@ -65,7 +65,7 @@ instance Functor (Reader e) where
 
 -- Fail Definition
 instance MonadFail (Reader e) where
-fail _ = Reader $ \_ -> Nothing
+    fail _ = Reader $ \_ -> Nothing
 
 -- Helper Methods
 runR :: Reader e a -> e -> Maybe a
@@ -112,5 +112,5 @@ evalReader :: KULang -> Reader EnvVal KULangVal
 evalReader _ = undefined
 
 -- Exercise 6:
-interpReader :: KULangExt -> KULangVal
+interpReader :: KULangExt -> Maybe KULangVal
 interpReader _ = undefined
