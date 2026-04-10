@@ -167,6 +167,17 @@ evalStat _ _ = Nothing
 
 -- Exercise 3:
 elabTerm :: KULangExt -> KULang 
+elabTerm (NumX n) = Num n
+elabTerm (PlusX l r) = Plus (elabTerm l) (elabTerm r)
+elabTerm (MinusX l r) = Minus (elabTerm l) (elabTerm r)
+elabTerm (MultX l r) = Mult (elabTerm l) (elabTerm r)
+elabTerm (DivX l r) = Div (elabTerm l) (elabTerm r)
+elabTerm (ExpX l r) = Exp (elabTerm l) (elabTerm r)
+elabTerm (If0X c t e') = If0 (elabTerm c) (elabTerm t) (elabTerm e')
+elabTerm (LambdaX i b) = Lambda i (elabTerm b) 
+elabTerm (AppX f a) = App (elabTerm f) (elabTerm a)
+elabTerm (BindX i v b) = (App (Lambda i (elabTerm b)) (elabTerm v))
+elabTerm (IdX i) = Id i
 elabTerm _ = (Num (-1))
 
 -- Exercise 4:
