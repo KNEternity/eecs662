@@ -182,6 +182,7 @@ elabTerm _ = (Num (-1))
 
 -- Exercise 4:
 interpElab :: EnvVal -> KULangExt -> (Maybe KULangVal)
+interpElab e t = evalStat e (elabTerm t)
 interpElab _ _ = Nothing
 
 -- Part 3: Reader Monad
