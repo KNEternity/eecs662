@@ -50,7 +50,7 @@ instance Monad (Reader e) where
 
  -- Applicative Definition
 instance Applicative (Reader e) where
---pure x = Reader $ \e -> Just x
+pure x = Reader $ \e -> Just x
 (Reader f) <*> (Reader g) = Reader $ \e -> case f e of
   Nothing -> Nothing
   Just fx -> case g e of
