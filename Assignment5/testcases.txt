@@ -39,3 +39,97 @@ runR (typeof (App (Lambda "x" TNum (Plus (Id "x") (Num 1))) (Num 3))) [] == Just
 -- runR (typeof (Plus (Num 1) (Boolean True))) [] == Nothing  -- type mismatch
 -- runR (typeof (Id "y")) [] == Nothing  -- unbound variable
 -- runR (typeof (App (Num 1) (Num 2))) [] == Nothing  -- applying non-function
+
+-- ========================================
+-- Test cases for eval (evaluation)
+-- Use: runR (eval <expr>) [] == Just <expected_value>
+-- ========================================
+
+-- Basic values
+runR (eval (Num 0)) [] == Just (NumV 0)
+runR (eval (Num 5)) [] == Just (NumV 5)
+runR (eval (Num 42)) [] == Just (NumV 42)
+runR (eval (Boolean True)) [] == Just (BooleanV True)
+runR (eval (Boolean False)) [] == Just (BooleanV False)
+
+-- Arithmetic - Plus
+runR (eval (Plus (Num 2) (Num 3))) [] == Just (NumV 5)
+runR (eval (Plus (Num 0) (Num 0))) [] == Just (NumV 0)
+runR (eval (Plus (Num 10) (Num 20))) [] == Just (NumV 30)
+
+-- Arithmetic - Minus
+runR (eval (Minus (Num 5) (Num 3))) [] == Just (NumV 2)
+runR (eval (Minus (Num 10) (Num 5))) [] == Just (NumV 5)
+runR (eval (Minus (Num 7) (Num 2))) [] == Just (NumV 5)
+
+-- Arithmetic - Multiplication
+runR (eval (Mult (Num 3) (Num 4))) [] == Just (NumV 12)
+runR (eval (Mult (Num 5) (Num 5))) [] == Just (NumV 25)
+runR (eval (Mult (Num 0) (Num 100))) [] == Just (NumV 0)
+
+-- Arithmetic - Division
+runR (eval (Div (Num 12) (Num 3))) [] == Just (NumV 4)
+runR (eval (Div (Num 10) (Num 2))) [] == Just (NumV 5)
+runR (eval (Div (Num 20) (Num 5))) [] == Just (NumV 4)
+
+-- Arithmetic - Exponentiation
+runR (eval (Exp (Num 2) (Num 3))) [] == Just (NumV 8)
+runR (eval (Exp (Num 3) (Num 2))) [] == Just (NumV 9)
+runR (eval (Exp (Num 5) (Num 1))) [] == Just (NumV 5)
+runR (eval (Exp (Num 2) (Num 0))) [] == Just (NumV 1)
+
+-- Boolean - And
+runR (eval (And (Boolean True) (Boolean True))) [] == Just (BooleanV True)
+runR (eval (And (Boolean True) (Boolean False))) [] == Just (BooleanV False)
+runR (eval (And (Boolean False) (Boolean True))) [] == Just (BooleanV False)
+runR (eval (And (Boolean False) (Boolean False))) [] == Just (BooleanV False)
+
+-- Boolean - Or
+runR (eval (Or (Boolean True) (Boolean True))) [] == Just (BooleanV True)
+runR (eval (Or (Boolean True) (Boolean False))) [] == Just (BooleanV True)
+runR (eval (Or (Boolean False) (Boolean True))) [] == Just (BooleanV True)
+runR (eval (Or (Boolean False) (Boolean False))) [] == Just (BooleanV False)
+
+-- Comparison - Leq
+runR (eval (Leq (Num 1) (Num 2))) [] == Just (BooleanV True)
+runR (eval (Leq (Num 2) (Num 2))) [] == Just (BooleanV True)
+runR (eval (Leq (Num 3) (Num 2))) [] == Just (BooleanV False)
+runR (eval (Leq (Num 0) (Num 10))) [] == Just (BooleanV True)
+
+-- IsZero
+runR (eval (IsZero (Num 0))) [] == Just (BooleanV True)
+runR (eval (IsZero (Num 1))) [] == Just (BooleanV False)
+runR (eval (IsZero (Num 5))) [] == Just (BooleanV False)
+runR (eval (IsZero (Num 42))) [] == Just (BooleanV False)
+
+-- Between
+runR (eval (Between (Num 1) (Num 5) (Num 10))) [] == Just (BooleanV True)
+runR (eval (Between (Num 1) (Num 1) (Num 10))) [] == Just (BooleanV False)
+runR (eval (Between (Num 5) (Num 5) (Num 10))) [] == Just (BooleanV False)
+runR (eval (Between (Num 10) (Num 5) (Num 1))) [] == Just (BooleanV False)
+
+-- If expressions with numeric conditions
+runR (eval (If (Num 1) (Num 100) (Num 200))) [] == Just (NumV 200)
+runR (eval (If (Num 0) (Num 100) (Num 200))) [] == Just (NumV 100)
+runR (eval (If (Plus (Num 1) (Num 1)) (Num 42) (Num 0))) [] == Just (NumV 0)
+runR (eval (If (IsZero (Num 0)) (Num 5) (Num 10))) [] == Just (NumV 5)
+
+-- Lambda and Application (identity function)
+runR (eval (App (Lambda "x" TNum (Id "x")) (Num 5))) [] == Just (NumV 5)
+
+-- Lambda and Application (increment function)
+runR (eval (App (Lambda "x" TNum (Plus (Id "x") (Num 1))) (Num 4))) [] == Just (NumV 5)
+
+-- Lambda and Application (double function)
+runR (eval (App (Lambda "x" TNum (Mult (Id "x") (Num 2))) (Num 7))) [] == Just (NumV 14)
+
+-- Nested applications
+runR (eval (App (Lambda "x" TNum (App (Lambda "y" TNum (Plus (Id "x") (Id "y"))) (Num 3))) (Num 2))) [] == Just (NumV 5)
+
+-- Complex nested arithmetic
+runR (eval (Plus (Mult (Num 2) (Num 3)) (Num 4))) [] == Just (NumV 10)
+runR (eval (Minus (Mult (Num 6) (Num 2)) (Num 5))) [] == Just (NumV 7)
+runR (eval (Div (Plus (Num 10) (Num 8)) (Num 2))) [] == Just (NumV 9)
+
+-- Complex if with boolean operations
+runR (eval (If (And (Leq (Num 1) (Num 5)) (Leq (Num 5) (Num 10))) (Num 1) (Num 0))) [] == Just (NumV 0)

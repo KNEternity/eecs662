@@ -26,6 +26,7 @@ data KULang where
   Or :: KULang -> KULang -> KULang
   Leq :: KULang -> KULang -> KULang
   IsZero :: KULang -> KULang
+  Fix :: KULang -> KULang --fix t, should only take one input
   deriving (Show,Eq)  
 
 data KULangExt where
@@ -177,13 +178,102 @@ typeof (IsZero x) = do {
     TNum <- typeof x;
     return TNum
 }
+typeof (Fix f) = do {(d :->: r) <- typeof f;
+                        if d == r then return d else error "fail"}
 typeof _ = fail "Not implemented yet"
-
 -- Part 2 - Evaluation
 eval :: KULang -> Reader EnvVal KULangVal
+eval (Num n) = if n<0 then error "fail" else return (NumV n)
+eval (Boolean b) = return (BooleanV b)
+eval (Id i) = do {env <- ask;
+                    case (lookup i env) of
+                    Just x -> return x
+                    Nothing -> fail "unbound variable"} 
+
+eval (Plus l r) = do {(NumV l') <- eval l;
+                      (NumV r') <- eval r;
+                      return (NumV (l'+ r'))}
+
+eval (Minus l r ) = do {
+    (NumV l') <- eval l;
+    (NumV r') <- eval r;
+    let d = l' - r' in
+    if d < 0 then error "fail" else return (NumV d)
+}
+eval (Mult l r) = do {
+    (NumV l') <- eval l;
+    (NumV r') <- eval r;
+    return (NumV (l'*r'))
+}
+eval (Div l r ) = do {
+    (NumV l') <- eval l;
+    (NumV r') <- eval r;
+    if r' == 0 then error "fail" else return (NumV (l' `div` r'))
+
+}
+
+eval (Exp l r) = do {
+     (NumV l') <- eval l;
+     (NumV r') <- eval r;
+     return (NumV (l'^r'))
+ }
+
+eval(Between x y z) = do {
+    (NumV x') <- eval x;
+    (NumV y') <- eval y;
+    (NumV z') <- eval z;
+    eval (And (Boolean(x' < y'))(Boolean(y' < z'))) 
+}
+
+eval (Lambda i d b) = do {env <- ask; --d stands for the domain type
+                    return (ClosureV i b env)} --this is because we are static scoping
+eval (App f a) = do {
+                     (ClosureV i b e) <- eval f;
+                     v <- eval a;
+                     local (useClosure i v e) (eval b)}
+eval (If c t e') = do {
+    (NumV c') <- eval c;
+    if c' == 0 then (eval t) else (eval e') }
+
+eval (And x y) = do {
+    (BooleanV x') <- eval x;
+    (BooleanV y') <- eval y;
+    return (BooleanV (x' && y'))
+}
+eval (Or x y) = do {
+    (BooleanV x') <- eval x;
+    (BooleanV y') <- eval y;
+    return (BooleanV (x' || y'))
+}
+eval (Leq x y) = do {
+    (NumV x') <- eval x;
+    (NumV y') <- eval y;
+    return (BooleanV (x' <= y'))}
+
+eval (IsZero x) = do {
+    (NumV x') <- eval x;
+    return (BooleanV (x' == 0))}   
+
+eval (Fix f) = do
+    (ClosureV i b env) <- eval f
+    let rec_closure = ClosureV i b ((i, rec_closure) : env)
+    local (useClosure i rec_closure env) (eval b)
+
 eval _ = fail "Not implemented yet"
 
+
+
 -- Part 3 - Add the Fixed Point Operator
+
+-- Orginal code in the eval code block
+-- eval (Fix f) = do
+--     (ClosureV i b env) <- eval f
+--     let rec_closure = ClosureV i b ((i, rec_closure) : env)
+--     local (useClosure i rec_closure env) (eval b)
+
+-- Orginal code in the typeof code block
+-- typeof (Fix f) = do {(d :->: r) <- typeof f;
+--     if d == r then return d else error "fail"}
 
 -- Part 4 - Interpretation
 interpret :: KULangExt -> Maybe KULangVal
