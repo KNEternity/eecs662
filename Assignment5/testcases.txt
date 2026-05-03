@@ -133,3 +133,75 @@ runR (eval (Div (Plus (Num 10) (Num 8)) (Num 2))) [] == Just (NumV 9)
 
 -- Complex if with boolean operations
 runR (eval (If (And (Leq (Num 1) (Num 5)) (Leq (Num 5) (Num 10))) (Num 1) (Num 0))) [] == Just (NumV 0)
+
+-- ========================================
+-- Test cases for interpret (interpretation)
+-- Use: interpret <expr> == Just <expected_value>
+-- ========================================
+
+-- Basic values
+interpret (NumX 5) == Just (NumV 5)
+interpret (BooleanX True) == Just (BooleanV True)
+interpret (BooleanX False) == Just (BooleanV False)
+
+-- Arithmetic operations
+interpret (PlusX (NumX 2) (NumX 3)) == Just (NumV 5)
+interpret (MinusX (NumX 5) (NumX 3)) == Just (NumV 2)
+interpret (MultX (NumX 3) (NumX 4)) == Just (NumV 12)
+interpret (DivX (NumX 12) (NumX 3)) == Just (NumV 4)
+interpret (ExpX (NumX 2) (NumX 3)) == Just (NumV 8)
+
+-- Boolean operations
+interpret (AndX (BooleanX True) (BooleanX False)) == Just (BooleanV False)
+interpret (OrX (BooleanX True) (BooleanX False)) == Just (BooleanV True)
+interpret (LeqX (NumX 1) (NumX 2)) == Just (BooleanV True)
+interpret (IsZeroX (NumX 0)) == Just (BooleanV True)
+
+-- Between
+interpret (BetweenX (NumX 1) (NumX 5) (NumX 10)) == Just (BooleanV True)
+
+-- If expression
+interpret (IfX (BooleanX True) (NumX 1) (NumX 2)) == Just (NumV 1)
+interpret (IfX (BooleanX False) (NumX 1) (NumX 2)) == Just (NumV 2)
+
+-- Lambda and Application
+interpret (AppX (LambdaX "x" TNum (IdX "x")) (NumX 5)) == Just (NumV 5)
+interpret (AppX (LambdaX "x" TNum (PlusX (IdX "x") (NumX 1))) (NumX 4)) == Just (NumV 5)
+
+-- Bind (let binding)
+interpret (BindX "x" TNum (NumX 10) (IdX "x")) == Just (NumV 10)
+interpret (BindX "x" TNum (NumX 5) (PlusX (IdX "x") (NumX 3))) == Just (NumV 8)
+
+-- Recursive functions (Fibonacci)
+interpret (
+    BindX "fib" (TNum :->: TNum)
+        (FixX (LambdaX "g" (TNum :->: TNum)
+            (LambdaX "x" TNum
+                (IfX (LeqX (IdX "x") (NumX 1))
+                    (IdX "x")
+                    (PlusX
+                        (AppX (IdX "g") (MinusX (IdX "x") (NumX 1)))
+                        (AppX (IdX "g") (MinusX (IdX "x") (NumX 2)))
+                    )
+                )
+            )
+        ))
+        (AppX (IdX "fib") (NumX 5))
+) == Just (NumV 5)
+
+-- Recursive functions (isEven)
+interpret (
+    BindX "isEven" (TNum :->: TBool)
+        (FixX (LambdaX "g" (TNum :->: TBool)
+            (LambdaX "x" TNum
+                (IfX (IsZeroX (IdX "x"))
+                    (BooleanX True)
+                    (IfX (LeqX (IdX "x") (NumX 1))
+                        (BooleanX False)
+                        (AppX (IdX "g") (MinusX (IdX "x") (NumX 2)))
+                    )
+                )
+            )
+        ))
+        (AppX (IdX "isEven") (NumX 4))
+) == Just (BooleanV True)
