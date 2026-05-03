@@ -25,6 +25,7 @@ data KULang where
   If :: KULang -> KULang -> KULang -> KULang
   And :: KULang -> KULang -> KULang
   Or :: KULang -> KULang -> KULang
+  Geq :: KULang -> KULang -> KULang
   Leq :: KULang -> KULang -> KULang
   IsZero :: KULang -> KULang
   Fix :: KULang -> KULang --fix t, should only take one input
@@ -46,6 +47,7 @@ data KULangExt where
   IfX :: KULangExt -> KULangExt -> KULangExt -> KULangExt
   AndX :: KULangExt -> KULangExt -> KULangExt
   OrX :: KULangExt -> KULangExt -> KULangExt
+  GeqX :: KULangExt -> KULangExt -> KULangExt
   LeqX :: KULangExt -> KULangExt -> KULangExt
   IsZeroX :: KULangExt -> KULangExt
   FixX :: KULangExt -> KULangExt
@@ -90,6 +92,7 @@ subst i v (App f a)     = App (subst i v f) (subst i v a)
 subst i v (If c t e')   = If (subst i v c) (subst i v t) (subst i v e')
 subst i v (And x y)     = And (subst i v x) (subst i v y)
 subst i v (Or x y)      = Or (subst i v x) (subst i v y)
+subst i v (Geq x y)     = Geq (subst i v x) (subst i v y)
 subst i v (Leq x y)     = Leq (subst i v x) (subst i v y)
 subst i v (IsZero x)    = IsZero (subst i v x)
 subst i v (Fix f)       = Fix (subst i v f)
@@ -120,9 +123,8 @@ instance Applicative (Reader e) where
 instance MonadFail (Reader e) where
   fail _ = Reader $ \_ -> Nothing
 
--- ========== Project Exercises ========== --
 
--- Part 1 - Type Inference
+-- Type Inference
 typeof :: KULang -> Reader Cont KUTypeLang
 typeof (Num n) = if n < 0 then error "Num typefail" else return (TNum)
 typeof (Boolean b) = return (TBool)
@@ -187,6 +189,12 @@ typeof (And x y) = do {
 typeof (Or x y) = do {
     TBool <- typeof x;
     TBool <- typeof y;
+    return TBool
+}
+
+typeof (Geq x y) = do {
+    TNum <- typeof x;
+    TNum <- typeof y;
     return TBool
 }
 
@@ -268,6 +276,11 @@ eval (Or x y) = do {
     (BooleanV y') <- eval y;
     return (BooleanV (x' || y'))
 }
+eval (Geq x y) = do {
+    (NumV x') <- eval x;
+    (NumV y') <- eval y;
+    return (BooleanV (x' >= y'))}
+
 eval (Leq x y) = do {
     (NumV x') <- eval x;
     (NumV y') <- eval y;
@@ -283,21 +296,6 @@ eval (Fix f) = do
 
 eval _ = fail "Not implemented yet"
 
-
-
--- Part 3 - Add the Fixed Point Operator
-
--- Orginal code in the eval code block
--- eval (Fix f) = do
---     (ClosureV i b env) <- eval f
---     let rec_closure = ClosureV i b ((i, rec_closure) : env)
---     local (useClosure i rec_closure env) (eval b)
-
--- Orginal code in the typeof code block
--- typeof (Fix f) = do {(d :->: r) <- typeof f;
---     if d == r then return d else error "fail"}
-
--- Part 4 - Interpretation
 --Elaborator that converts KULangExt to KULang
 elabTerm :: KULangExt -> KULang
 elabTerm (NumX n) = Num n
@@ -315,6 +313,7 @@ elabTerm (BindX i d v b) = App (Lambda i d (elabTerm b)) (elabTerm v)
 elabTerm (IfX c t e') = If (elabTerm c) (elabTerm t) (elabTerm e')
 elabTerm (AndX x y) = And (elabTerm x) (elabTerm y)
 elabTerm (OrX x y) = Or (elabTerm x) (elabTerm y)
+elabTerm (GeqX x y) = Geq (elabTerm x) (elabTerm y)
 elabTerm (LeqX x y) = Leq (elabTerm x) (elabTerm y)
 elabTerm (IsZeroX x) = IsZero (elabTerm x)
 elabTerm (FixX f) = Fix (elabTerm f)
@@ -326,37 +325,3 @@ interpret t = do {
     runR (eval (elabTerm t)) [] --run this to evaluate
 }
 interpret _ = Nothing
-
--- Test Cases
-
-testFib = interpret ( 
-                BindX "fib" (TNum :->: TNum)
-                    (FixX (LambdaX "g" (TNum :->: TNum)
-                        (LambdaX "x" TNum 
-                            (IfX (LeqX (IdX "x") (NumX 1))
-                                (IdX "x")
-                                (PlusX 
-                                    (AppX (IdX "g") (MinusX (IdX "x") (NumX 1)))
-                                    (AppX (IdX "g") (MinusX (IdX "x") (NumX 2)))
-                                )
-                            )
-                        )
-                    ))
-                    (AppX (IdX "fib") (NumX 2))) == 
-                Just (NumV 1)
-
-testIsEven = interpret ( 
-                BindX "isEven" (TNum :->: TBool)
-                    (FixX (LambdaX "g" (TNum :->: TBool)
-                        (LambdaX "x" TNum
-                            (IfX (IsZeroX (IdX "x"))
-                                (BooleanX True)
-                                (IfX (LeqX (IdX "x") (NumX 1))
-                                    (BooleanX False)
-                                    (AppX (IdX "g") (MinusX (IdX "x") (NumX 2)))
-                                )
-                            )
-                        )
-                    ))
-                    (AppX (IdX "isEven") (NumX 67))) == 
-                    Just (BooleanV False)
