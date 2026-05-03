@@ -1,0 +1,41 @@
+-- Test cases for typeof (type inference)
+-- Use: runR (typeof <expr>) [] == Just <expected_type>
+
+-- Basic types
+runR (typeof (Num 5)) [] == Just TNum
+runR (typeof (Boolean True)) [] == Just TBool
+
+-- Arithmetic operations
+runR (typeof (Plus (Num 1) (Num 2))) [] == Just TNum
+runR (typeof (Minus (Num 5) (Num 3))) [] == Just TNum
+runR (typeof (Mult (Num 4) (Num 7))) [] == Just TNum
+runR (typeof (Div (Num 8) (Num 4))) [] == Just TNum
+runR (typeof (Exp (Num 2) (Num 3))) [] == Just TNum
+
+-- Boolean operations
+runR (typeof (And (Boolean True) (Boolean False))) [] == Just TBool
+runR (typeof (Or (Boolean True) (Boolean False))) [] == Just TBool
+runR (typeof (Leq (Num 1) (Num 2))) [] == Just TBool
+runR (typeof (IsZero (Num 0))) [] == Just TBool
+
+-- Between
+runR (typeof (Between (Num 1) (Num 2) (Num 3))) [] == Just TBool
+
+-- If expression
+runR (typeof (If (Boolean True) (Num 1) (Num 2))) [] == Just TNum
+runR (typeof (If (Boolean False) (Boolean True) (Boolean False))) [] == Just TBool
+
+-- Lambda expressions
+runR (typeof (Lambda "x" TNum (Id "x"))) [] == Just (TNum :->: TNum)
+runR (typeof (Lambda "x" TNum (Plus (Id "x") (Num 1)))) [] == Just (TNum :->: TNum)
+runR (typeof (Lambda "x" TBool (If (Id "x") (Num 1) (Num 0)))) [] == Just (TBool :->: TNum)
+
+-- Application
+runR (typeof (App (Lambda "x" TNum (Id "x")) (Num 5))) [] == Just TNum
+runR (typeof (App (Lambda "x" TNum (Plus (Id "x") (Num 1))) (Num 3))) [] == Just TNum
+
+-- Errors (these should return Nothing)
+-- runR (typeof (Num (-1))) [] == Nothing  -- negative numbers fail
+-- runR (typeof (Plus (Num 1) (Boolean True))) [] == Nothing  -- type mismatch
+-- runR (typeof (Id "y")) [] == Nothing  -- unbound variable
+-- runR (typeof (App (Num 1) (Num 2))) [] == Nothing  -- applying non-function
