@@ -6,6 +6,7 @@ import Data.Text.Array (run)
 data KUTypeLang where
   TNum :: KUTypeLang
   TBool :: KUTypeLang
+  TStr :: KUTypeLang
   (:->:) :: KUTypeLang -> KUTypeLang -> KUTypeLang
   TClosure :: String -> KUTypeLang -> Cont -> KUTypeLang
   deriving (Show,Eq)
@@ -13,6 +14,7 @@ data KUTypeLang where
 data KULang where
   Num :: Int -> KULang
   Boolean :: Bool -> KULang
+  Str :: String -> KULang
   Id :: String -> KULang
   Plus :: KULang -> KULang -> KULang
   Minus :: KULang -> KULang -> KULang
@@ -29,11 +31,13 @@ data KULang where
   Leq :: KULang -> KULang -> KULang
   IsZero :: KULang -> KULang
   Fix :: KULang -> KULang --fix t, should only take one input
+  Concat :: KULang -> KULang -> KULang 
   deriving (Show,Eq)  
 
 data KULangExt where
   NumX :: Int -> KULangExt
   BooleanX :: Bool -> KULangExt
+  StrX :: String -> KULangExt
   IdX :: String -> KULangExt  
   PlusX :: KULangExt -> KULangExt -> KULangExt
   MinusX :: KULangExt -> KULangExt -> KULangExt
@@ -51,11 +55,13 @@ data KULangExt where
   LeqX :: KULangExt -> KULangExt -> KULangExt
   IsZeroX :: KULangExt -> KULangExt
   FixX :: KULangExt -> KULangExt
+  ConcatX :: KULangExt -> KULangExt -> KULangExt
   deriving (Show,Eq)
 
 data KULangVal where
   NumV :: Int -> KULangVal
   BooleanV :: Bool -> KULangVal
+  StrV :: String -> KULangVal
   ClosureV :: String -> KULang -> EnvVal -> KULangVal
   deriving (Show,Eq)
 
@@ -96,6 +102,7 @@ subst i v (Geq x y)     = Geq (subst i v x) (subst i v y)
 subst i v (Leq x y)     = Leq (subst i v x) (subst i v y)
 subst i v (IsZero x)    = IsZero (subst i v x)
 subst i v (Fix f)       = Fix (subst i v f)
+subst i v (Concat l r) = Concat (subst i v l) (subst i v r)
 subst _ _ e             = e  -- Num, Boolean base cases
 
 instance Monad (Reader e) where
@@ -128,6 +135,7 @@ instance MonadFail (Reader e) where
 typeof :: KULang -> Reader Cont KUTypeLang
 typeof (Num n) = if n < 0 then error "Num typefail" else return (TNum)
 typeof (Boolean b) = return (TBool)
+typeof (Str s) = return (TStr) 
 typeof (Id i) = do {cont <- ask;
                     case (lookup i cont) of
                     Just x -> return x
@@ -209,12 +217,19 @@ typeof (IsZero x) = do {
     return TBool
 }
 typeof (Fix f) = do {(d :->: r) <- typeof f;
-                        if d == r then return d else error "Fix type fail"}
+    if d == r then return d else error "Fix type fail"}
+
+typeof (Concat l r) = do {
+    TStr <- typeof l;
+    TStr <- typeof r;
+    return TStr
+}
 typeof _ = fail "Not implemented yet"
 -- Part 2 - Evaluation
 eval :: KULang -> Reader EnvVal KULangVal
 eval (Num n) = if n<0 then error "Num eval fail" else return (NumV n)
 eval (Boolean b) = return (BooleanV b)
+eval (Str s) = return (StrV s)
 eval (Id i) = do {env <- ask;
                     case (lookup i env) of
                     Just x -> return x
@@ -294,12 +309,19 @@ eval (Fix f) = do
     (ClosureV i b _) <- eval f
     eval (subst i (Fix (Lambda i TNum b)) b)
 
+eval (Concat l r) = do {
+    (StrV l') <- eval l;
+    (StrV r') <- eval r;
+    return (StrV (l' ++ r'))
+}
+
 eval _ = fail "Not implemented yet"
 
 --Elaborator that converts KULangExt to KULang
 elabTerm :: KULangExt -> KULang
 elabTerm (NumX n) = Num n
 elabTerm (BooleanX b) = Boolean b
+elabTerm (StrX s) = Str s
 elabTerm (IdX id) = Id id
 elabTerm (PlusX l r) = Plus (elabTerm l) (elabTerm r)
 elabTerm (MinusX l r) = Minus (elabTerm l) (elabTerm r)
@@ -317,6 +339,7 @@ elabTerm (GeqX x y) = Geq (elabTerm x) (elabTerm y)
 elabTerm (LeqX x y) = Leq (elabTerm x) (elabTerm y)
 elabTerm (IsZeroX x) = IsZero (elabTerm x)
 elabTerm (FixX f) = Fix (elabTerm f)
+elabTerm (ConcatX l r) = Concat (elabTerm l) (elabTerm r)
 elabTerm _ = (Num (-1))
 
 interpret :: KULangExt -> Maybe KULangVal

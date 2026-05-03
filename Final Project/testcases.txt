@@ -1,0 +1,9 @@
+-- Geq
+interpret (GeqX (NumX 3) (NumX 2)) == Just (BooleanV True)
+interpret (GeqX (NumX 2) (NumX 2)) == Just (BooleanV True)
+interpret (GeqX (NumX 1) (NumX 2)) == Just (BooleanV False)
+
+-- Concat string operations
+interpret (ConcatX (StrX "foo") (StrX "bar")) == Just (StrV "foobar")
+interpret (ConcatX (StrX "") (StrX "x")) == Just (StrV "x")
+interpret (ConcatX (StrX "a") (StrX "")) == Just (StrV "a")
