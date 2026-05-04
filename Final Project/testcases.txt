@@ -14,3 +14,10 @@ interpret (ReverseStrX (StrX "hello")) == Just (StrV "olleh")
 interpret (ReverseStrX (StrX "")) == Just (StrV "")
 interpret (ReverseStrX (StrX "a")) == Just (StrV "a")
 interpret (ReverseStrX (ConcatX (StrX "ab") (StrX "cd"))) == Just (StrV "dcba")
+
+-- Length of string tests
+interpret (LengthX (StrX "hello")) == Just (NumV 5)
+interpret (LengthX (StrX "")) == Just (NumV 0)
+interpret (LengthX (StrX "a")) == Just (NumV 1)
+interpret (LengthX (ConcatX (StrX "foo") (StrX "bar"))) == Just (NumV 6)
+interpret (LengthX (ReverseStrX (StrX "hello"))) == Just (NumV 5)
