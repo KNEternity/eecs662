@@ -31,8 +31,9 @@ data KULang where
   Leq :: KULang -> KULang -> KULang
   IsZero :: KULang -> KULang
   Fix :: KULang -> KULang --fix t, should only take one input
-  Concat :: KULang -> KULang -> KULang 
-  deriving (Show,Eq)  
+  Concat :: KULang -> KULang -> KULang
+  ReverseStr :: KULang -> KULang
+  deriving (Show,Eq)
 
 data KULangExt where
   NumX :: Int -> KULangExt
@@ -56,6 +57,7 @@ data KULangExt where
   IsZeroX :: KULangExt -> KULangExt
   FixX :: KULangExt -> KULangExt
   ConcatX :: KULangExt -> KULangExt -> KULangExt
+  ReverseStrX :: KULangExt -> KULangExt
   deriving (Show,Eq)
 
 data KULangVal where
@@ -103,6 +105,7 @@ subst i v (Leq x y)     = Leq (subst i v x) (subst i v y)
 subst i v (IsZero x)    = IsZero (subst i v x)
 subst i v (Fix f)       = Fix (subst i v f)
 subst i v (Concat l r) = Concat (subst i v l) (subst i v r)
+subst i v (ReverseStr x) = ReverseStr (subst i v x)
 subst _ _ e             = e  -- Num, Boolean base cases
 
 instance Monad (Reader e) where
@@ -224,6 +227,10 @@ typeof (Concat l r) = do {
     TStr <- typeof r;
     return TStr
 }
+typeof (ReverseStr x) = do {
+    TStr <- typeof x;
+    return TStr
+}
 typeof _ = fail "Not implemented yet"
 -- Part 2 - Evaluation
 eval :: KULang -> Reader EnvVal KULangVal
@@ -314,6 +321,10 @@ eval (Concat l r) = do {
     (StrV r') <- eval r;
     return (StrV (l' ++ r'))
 }
+eval (ReverseStr x) = do {
+    (StrV x') <- eval x;
+    return (StrV (reverse x'))
+}
 
 eval _ = fail "Not implemented yet"
 
@@ -340,6 +351,7 @@ elabTerm (LeqX x y) = Leq (elabTerm x) (elabTerm y)
 elabTerm (IsZeroX x) = IsZero (elabTerm x)
 elabTerm (FixX f) = Fix (elabTerm f)
 elabTerm (ConcatX l r) = Concat (elabTerm l) (elabTerm r)
+elabTerm (ReverseStrX x) = ReverseStr (elabTerm x)
 elabTerm _ = (Num (-1))
 
 interpret :: KULangExt -> Maybe KULangVal
