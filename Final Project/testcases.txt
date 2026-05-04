@@ -7,3 +7,10 @@ interpret (GeqX (NumX 1) (NumX 2)) == Just (BooleanV False)
 interpret (ConcatX (StrX "foo") (StrX "bar")) == Just (StrV "foobar")
 interpret (ConcatX (StrX "") (StrX "x")) == Just (StrV "x")
 interpret (ConcatX (StrX "a") (StrX "")) == Just (StrV "a")
+
+-- ReverseStr string reverse tests
+interpret (ReverseStrX (StrX "cat")) == Just (StrV "tac")
+interpret (ReverseStrX (StrX "hello")) == Just (StrV "olleh")
+interpret (ReverseStrX (StrX "")) == Just (StrV "")
+interpret (ReverseStrX (StrX "a")) == Just (StrV "a")
+interpret (ReverseStrX (ConcatX (StrX "ab") (StrX "cd"))) == Just (StrV "dcba")
